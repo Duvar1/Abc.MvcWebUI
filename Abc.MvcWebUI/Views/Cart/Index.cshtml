@@ -1,0 +1,89 @@
+﻿@model Abc.MvcWebUI.Models.Cart
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .button-container {
+        display: flex;
+        justify-content: space-between;
+    }
+</style>
+
+<div class="container pb-5">
+    <div class="row mt-1">
+        <div class="col-md-12">
+            <h2>Alışveriş Sepeti</h2>
+            <hr />
+            @if (Model.CartLines.Count > 0)
+            {
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Quantity</th>
+                            <th>Product Name</th>
+                            <th>Price</th>
+                            <th>Sub Total</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.CartLines)
+                        {
+                            <tr>
+                                <th>
+                                    <img src="/Upload/@item.Product.Image" width="50" />
+                                </th>
+                                <th>
+                                    @item.Quantity
+                                </th>
+                                <th>
+                                    @item.Product.Name
+                                </th>
+                                <th>
+                                    @item.Product.Price
+                                </th>
+                                <th>
+                                    @((item.Product.Price*item.Quantity).ToString("c"))
+                                </th>
+                                <th>
+                                    @using (Html.BeginForm("RemoveFromCart", "Cart"))
+                                    {
+                                        @Html.Hidden("Id", item.Product.Id)
+                                        <button type="submit" class="btn btn-danger">
+                                            <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                            Delete
+                                        </button>
+                                    }
+                                </th>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="4"></td>
+                            <td>
+                                @Model.Total().ToString("c")
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            }
+            else
+            {
+                <div class="alert alert-warning" role="alert">
+                    Alışveriş Sepetinizde Ürün Bulunmamaktadır.
+                </div>
+            }
+            <div class="button-container">
+                <form action="/Home/List">
+                    <input class="btn btn-dark" type="submit" value="Alışverişe Dön" />
+                </form>
+                <form action="/Cart/CheckOut">
+                    <input class="btn btn-dark" type="submit" value="Alışverişi Tamamla" />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
